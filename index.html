@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNN Classification Pipeline</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">🤖</span>
+                <span class="logo-text">KNN Classifier</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#overview" class="nav-link">Overview</a>
+                <a href="#visualization" class="nav-link">Visualization</a>
+                <a href="#prediction" class="nav-link">Predict</a>
+                <a href="#metrics" class="nav-link">Metrics</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        
+        <!-- Hero Section -->
+        <section id="overview" class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">KNN Classification Pipeline</h1>
+                <p class="hero-subtitle">
+                    K-Nearest Neighbors classifier with automated preprocessing and non-linear decision boundaries
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="train-acc">—</div>
+                        <div class="stat-label">Training Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="test-acc">—</div>
+                        <div class="stat-label">Testing Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="train-samples">—</div>
+                        <div class="stat-label">Training Samples</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="test-samples">—</div>
+                        <div class="stat-label">Testing Samples</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visualization Section -->
+        <section id="visualization" class="visualization-section">
+            <div class="section-container">
+                <h2 class="section-title">Model Visualizations</h2>
+                
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="decision-boundary">
+                        Decision Boundary
+                    </button>
+                    <button class="tab-button" data-tab="confusion-matrix">
+                        Confusion Matrix
+                    </button>
+                </div>
+
+                <div class="plots-container">
+                    <div class="tab-content active" id="decision-boundary">
+                        <div class="plot-wrapper">
+                            <img id="boundary-plot" src="" alt="Decision Boundary" class="plot-image">
+                            <div class="plot-loader">
+                                <div class="spinner"></div>
+                                <p>Loading visualization...</p>
+                            </div>
+                        </div>
+                        <div class="plot-description">
+                            <h3>Decision Boundary</h3>
+                            <p>
+                                This visualization shows how the KNN classifier partitions the feature space.
+                                The colored regions represent the decision boundaries for each class. Points are
+                                colored by their true class label, with darker edges indicating correct classifications.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="confusion-matrix">
+                        <div class="plot-wrapper">
+                            <img id="confusion-plot" src="" alt="Confusion Matrix" class="plot-image">
+                            <div class="plot-loader">
+                                <div class="spinner"></div>
+                                <p>Loading visualization...</p>
+                            </div>
+                        </div>
+                        <div class="plot-description">
+                            <h3>Confusion Matrix</h3>
+                            <p>
+                                The confusion matrix shows the model's prediction performance. Diagonal values
+                                represent correct predictions, while off-diagonal values show misclassifications.
+                                Darker green indicates higher values.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction Section -->
+        <section id="prediction" class="prediction-section">
+            <div class="section-container">
+                <h2 class="section-title">Interactive Prediction</h2>
+                
+                <div class="prediction-wrapper">
+                    <div class="prediction-form">
+                        <h3>Enter Feature Values</h3>
+                        
+                        <div class="form-group">
+                            <label for="feature1">Feature 1</label>
+                            <input 
+                                type="range" 
+                                id="feature1" 
+                                min="-3" 
+                                max="3" 
+                                step="0.1" 
+                                value="0"
+                                class="slider"
+                            >
+                            <div class="value-display">
+                                <span class="value-label">Value:</span>
+                                <span id="feature1-value" class="value-number">0.0</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="feature2">Feature 2</label>
+                            <input 
+                                type="range" 
+                                id="feature2" 
+                                min="-3" 
+                                max="3" 
+                                step="0.1" 
+                                value="0"
+                                class="slider"
+                            >
+                            <div class="value-display">
+                                <span class="value-label">Value:</span>
+                                <span id="feature2-value" class="value-number">0.0</span>
+                            </div>
+                        </div>
+
+                        <button id="predict-btn" class="predict-button">Make Prediction</button>
+                    </div>
+
+                    <div class="prediction-result">
+                        <div id="result-container" class="result-hidden">
+                            <div class="result-content">
+                                <div class="result-icon">🎯</div>
+                                <h4 id="prediction-class">Class —</h4>
+                                <p class="result-text">Adjust the sliders and click "Make Prediction" to test the model</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Section -->
+        <section id="metrics" class="metrics-section">
+            <div class="section-container">
+                <h2 class="section-title">Model Metrics</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h4>Model Configuration</h4>
+                        <ul class="metric-list">
+                            <li><span>Algorithm:</span> K-Nearest Neighbors</li>
+                            <li><span>K value:</span> <span id="k-value">5</span></li>
+                            <li><span>Features:</span> <span id="n-features">2</span></li>
+                            <li><span>Classes:</span> <span id="n-classes">2</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="metric-card">
+                        <h4>Data Split</h4>
+                        <ul class="metric-list">
+                            <li><span>Training set:</span> <span id="train-count">—</span></li>
+                            <li><span>Testing set:</span> <span id="test-count">—</span></li>
+                            <li><span>Total samples:</span> <span id="total-count">—</span></li>
+                            <li><span>Test ratio:</span> 20%</li>
+                        </ul>
+                    </div>
+
+                    <div class="metric-card">
+                        <h4>Class Metrics</h4>
+                        <div id="classification-metrics" class="classification-table">
+                            <p style="color: #999; font-size: 0.9em;">Loading metrics...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="model-info-card">
+                    <h4>Pipeline Components</h4>
+                    <ol class="pipeline-list">
+                        <li>
+                            <strong>StandardScaler</strong> - Normalizes features to have zero mean and unit variance
+                        </li>
+                        <li>
+                            <strong>KNeighborsClassifier</strong> - Classifies based on the majority class of k nearest neighbors
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>KNN Classification Pipeline • Built with scikit-learn, Flask & modern web technologies</p>
+                <p class="footer-meta">Lab 7 Assignment</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
